@@ -33,6 +33,7 @@
         android:layout_marginTop="20dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="8dp">
+
         <EditText
             android:id="@+id/edt_email"
             android:layout_width="match_parent"
@@ -48,10 +49,10 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="20dp"
-        app:cardElevation="1dp"
-
         app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="8dp">
+
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp">
 
         <EditText
             android:id="@+id/edt_password"
@@ -60,6 +61,7 @@
             android:background="@android:color/transparent"
             android:fontFamily="@font/nunito_medium"
             android:hint="Password"
+            android:inputType="textPassword"
             android:paddingHorizontal="20dp"
             android:textSize="18sp" />
     </androidx.cardview.widget.CardView>

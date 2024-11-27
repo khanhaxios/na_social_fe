@@ -13,18 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.kt.na_social.R;
 import com.kt.na_social.model.Feed;
+import com.kt.na_social.ultis.ApiUtils;
 
 import java.util.List;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder> {
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
     private List<Feed> feedList;
 
     private final Context context;
     private final IFeedAction iFeedAction;
+
+    public List<Feed> getFeedList() {
+        return feedList;
+    }
 
     public FeedAdapter(List<Feed> feedList, Context context, IFeedAction iFeedAction) {
         this.feedList = feedList;
@@ -43,7 +47,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         View root = LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_item, parent, false);
         return new FeedViewHolder(root);
     }
-
 
 
     @Override
@@ -90,13 +93,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         }
 
         public void onBind(Feed feed, Context context, IFeedAction iFeedAction) {
-            Log.d("here", feed.getLikeCount() + "");
-            Glide.with(context).load(feed.getImage()).into(imvThumb);
-            Glide.with(context).load(feed.getAuthorAvatar()).circleCrop().into(imvAuthor);
-            txtAuthor.setText(feed.getAuthor());
+            Glide.with(context).load(ApiUtils.mediaUri(feed.getMedia().get(0).getId()))
+                    .into(imvThumb);
+            Glide.with(context).load(feed.getAuthor().getProfileAvatar()).circleCrop().into(imvAuthor);
+            txtAuthor.setText(feed.getAuthor().getUsername());
             txtTime.setText(feed.getCreatedAt());
-            txtLikeCount.setText(String.valueOf(feed.getLikeCount()));
-            txtCommentCount.setText(String.valueOf(feed.getCommentCount()));
+            txtLikeCount.setText(String.valueOf(feed.getUserReacted().size()));
+            txtCommentCount.setText(String.valueOf(feed.getComments().size()));
             txtCaption.setText(feed.getCaption());
             btnShareFeed.setOnClickListener((e) -> iFeedAction.shareFeed(feed.getId()));
             btnBookMarkFeed.setOnClickListener((e) -> iFeedAction.bookMarkFeed(feed.getId()));
@@ -106,12 +109,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     public interface IFeedAction {
-        void likeFeed(int feedId);
+        void likeFeed(long feedId);
 
-        void openFeedComment(int feedId);
+        void openFeedComment(long feedId);
 
-        void shareFeed(int feedId);
+        void shareFeed(long feedId);
 
-        void bookMarkFeed(int feedId);
+        void bookMarkFeed(long feedId);
     }
 }

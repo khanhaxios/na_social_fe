@@ -2,67 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F9FAFB"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Top Bar with Close and Post Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:gravity="center_vertical"
         android:padding="8dp">
-        <!-- Close Button -->
+
         <ImageView
             android:id="@+id/close_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_close"
-             />
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_close" />
 
         <TextView
-            android:layout_weight="10"
-            android:textAlignment="center"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_weight="10"
             android:text="Share Your Feel"
+            android:textAlignment="center"
+            android:textColor="#000000"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
+            android:textStyle="bold" />
 
-        <!-- Post Button -->
         <Button
-            android:layout_weight="0"
             android:id="@+id/post_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Post"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="0"
             android:backgroundTint="#1877F2"
-            android:textColor="#FFFFFF"
-            android:layout_alignParentEnd="true" />
+            android:text="Post"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
-    <!-- User Info and Privacy Settings -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
 
-        <!-- User Avatar -->
         <ImageView
             android:id="@+id/user_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/avt2"
+            android:layout_marginEnd="8dp"
             android:scaleType="centerCrop"
-            android:layout_marginEnd="8dp" />
+            android:src="@drawable/avt2" />
 
-        <!-- User Name and Privacy Options -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,10 +68,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nguyen Ngoc Hong Anh"
-                android:textStyle="bold"
+                android:textColor="#000000"
                 android:textSize="16sp"
-                android:textColor="#000000" />
-
+                android:textStyle="bold" />
             <!-- Privacy Spinner (Friends, Public, Private) -->
             <Spinner
                 android:id="@+id/privacy_spinner"
@@ -89,39 +83,25 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Tag Friends Button -->
-    <Button
-        android:id="@+id/tag_friends_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tag Friends"
-        android:backgroundTint="#E7F3FF"
-        android:textColor="#1877F2"
-        android:padding="4dp"
-        android:layout_marginTop="8dp" />
-
-    <!-- Caption Input -->
     <EditText
         android:id="@+id/caption_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="What’s on your mind?"
-        android:background="#FFFFFF"
-        android:textSize="16sp"
-        android:padding="12dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:background="#FFFFFF"
+        android:hint="What’s on your mind?"
+        android:padding="12dp"
+        android:textSize="16sp" />
 
-    <!-- Photo Preview (Placeholder for Selected Image) -->
     <ImageView
         android:id="@+id/photo_preview"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/photo"
+        android:layout_marginBottom="16dp"
         android:scaleType="centerCrop"
-        android:layout_marginBottom="16dp" />
+        android:src="@drawable/photo" />
 
-    <!-- Options Row (Album, Location, etc.) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,21 +111,10 @@
             android:id="@+id/album_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album"
             android:backgroundTint="#E7F3FF"
-            android:textColor="#1877F2"
             android:drawableStart="@drawable/album"
-            android:padding="4dp" />
-
-        <Button
-            android:id="@+id/location_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location"
-            android:backgroundTint="#E7F3FF"
-            android:textColor="#1877F2"
-            android:drawableStart="@drawable/location"
             android:padding="4dp"
-            android:layout_marginStart="8dp" />
+            android:text="Album"
+            android:textColor="#1877F2" />
     </LinearLayout>
 </LinearLayout>

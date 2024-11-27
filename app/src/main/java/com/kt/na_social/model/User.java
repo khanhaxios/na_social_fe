@@ -1,5 +1,7 @@
 package com.kt.na_social.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
     private String uid;
     private String email;
@@ -7,63 +9,22 @@ public class User {
     private String idToken;
     private String password;
 
+    @SerializedName("apiToken")
+    private String token;
+
+    @SerializedName("avatar")
     private String profileAvatar;
-
-    private User(Builder builder) {
-        this.email = builder.email;
-        this.username = builder.username;
-        this.idToken = builder.idToken;
-        this.password = builder.password;
-    }
-
-    public static class Builder {
-        private String email;
-        private String username;
-        private String idToken;
-        private String password;
-        private String profileAvatar;
-        private String uid;
-
-
-        // Builder methods to set values
-        public Builder setEmail(String email) {
-            this.email = email;
-            return this; // Return the Builder object for method chaining
-        }
-
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this; // Return the Builder object for method chaining
-        }
-
-        public Builder setProfileAvatar(String avatar) {
-            this.profileAvatar = avatar;
-            return this;
-        }
-
-        public Builder setIdToken(String idToken) {
-            this.idToken = idToken;
-            return this; // Return the Builder object for method chaining
-        }
-
-        public Builder setPassword(String password) {
-            this.password = password;
-            return this; // Return the Builder object for method chaining
-        }
-
-        public Builder setUid(String uid) {
-            this.uid = uid;
-            return this;
-        }
-
-        // Build method to create the User instance
-        public User build() {
-            return new User(this);
-        }
-    }
 
     public String getEmail() {
         return email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setEmail(String email) {

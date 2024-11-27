@@ -15,4 +15,6 @@ public class FeedResponse {
     private int privacy;
     private String authorAvatar;
     private List<String> userReacted = new ArrayList<>();
+
+
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -19,15 +20,26 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.kt.na_social.R;
 import com.kt.na_social.model.User;
+import com.kt.na_social.ultis.FileUtils;
 import com.kt.na_social.ultis.Navigator;
 import com.kt.na_social.viewmodel.AuthStore;
 
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class RegisterFragment extends Fragment {
@@ -118,22 +130,33 @@ public class RegisterFragment extends Fragment {
                 Toast.makeText(requireContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
-            FirebaseUser currentUser = mAuth.getCurrentUser();
-
-            if (currentUser != null) {
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(name)
-                        .setPhotoUri(avatarUri)
-                        .build();
-                currentUser.updateProfile(profileUpdates)
-                        .addOnCompleteListener(ts -> {
-                            if (ts.isSuccessful()) {
-                                Navigator.goBack();
-                                Toast.makeText(requireContext(), "Register Success", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
+            StorageReference firebaseStorage = FirebaseStorage.getInstance().getReference();
+            StorageReference child = firebaseStorage.child("uploads/" + UUID.randomUUID().toString() + FileUtils.getFileExtension(requireContext(), avatarUri));
+            UploadTask uploadTask = child.putFile(avatarUri);
+            uploadTask.continueWithTask(task1 -> {
+                if (!task1.isSuccessful()) {
+                    throw Objects.requireNonNull(task1.getException());
+                }
+                return child.getDownloadUrl();
+            }).addOnCompleteListener(task12 -> {
+                if (task12.isSuccessful()) {
+                    Uri downloadUri = task12.getResult();
+                    FirebaseUser currentUser = mAuth.getCurrentUser();
+                    if (currentUser != null) {
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(name)
+                                .setPhotoUri(downloadUri)
+                                .build();
+                        currentUser.updateProfile(profileUpdates)
+                                .addOnCompleteListener(ts -> {
+                                    if (ts.isSuccessful()) {
+                                        Navigator.goBack();
+                                        Toast.makeText(requireContext(), "Register Success", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }
+            });
         });
-
     }
 }

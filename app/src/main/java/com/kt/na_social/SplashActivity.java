@@ -19,18 +19,28 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.kt.na_social.api.UserApi;
+import com.kt.na_social.api.requests.LoginRequestBody;
+import com.kt.na_social.api.response.BaseResponse;
 import com.kt.na_social.enums.AuthKeyType;
 import com.kt.na_social.model.User;
 import com.kt.na_social.ultis.KeyStore;
 import com.kt.na_social.ultis.Navigator;
+import com.kt.na_social.ultis.RetrofitApi;
 import com.kt.na_social.ultis.StaticStore;
 import com.kt.na_social.viewmodel.AuthStore;
 
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SplashActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+
+    private UserApi userApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load(R.drawable.loader).fitCenter().into(loader);
         SVGImageView svgImageView = findViewById(R.id.svgImageView);
         loadSVG(svgImageView, R.raw.cuate);
+        userApi = RetrofitApi.getInstance().create(UserApi.class);
         tryAutoLogin();
     }
 
@@ -48,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
-        }, 1500);
+        }, 1000);
     }
 
 
@@ -63,30 +74,62 @@ public class SplashActivity extends AppCompatActivity {
             AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
             mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
                 if (!task.isSuccessful()) {
+                    finishInit();
                     return;
                 }
-                handleFirebaseUser();
+                handleFirebaseUser(null, idToken);
+            }).addOnFailureListener((f) -> {
+                Toast.makeText(this, "Credential expired", Toast.LENGTH_LONG).show();
             });
-        }
-        if (Objects.equals(authType, AuthKeyType.PASSWORD.toString())) {
+        } else if (Objects.equals(authType, AuthKeyType.PASSWORD.toString())) {
             mAuth.signInWithEmailAndPassword(email, idToken).addOnCompleteListener(this, task -> {
                 if (!task.isSuccessful()) {
+                    finishInit();
                     return;
                 }
-                handleFirebaseUser();
+                handleFirebaseUser(idToken, null);
             });
+        } else {
+            finishInit();
         }
-        finishInit();
     }
 
-    public void handleFirebaseUser() {
+    public void handleFirebaseUser(String password, String token) {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser == null) return;
-        User user = new User.Builder()
-                .setEmail(firebaseUser.getEmail())
-                .setUsername(firebaseUser.getDisplayName())
-                .build();
-        AuthStore.getInstance().setLoggedUser(user);
+
+        LoginRequestBody requestBody = new LoginRequestBody();
+        requestBody.setDisplayName(firebaseUser.getDisplayName());
+        requestBody.setPassword(password);
+        requestBody.setUsername(firebaseUser.getEmail());
+        requestBody.setAvatar(String.valueOf(firebaseUser.getPhotoUrl()));
+        requestBody.setUid(firebaseUser.getUid());
+        requestBody.setToken(token);
+        // call api to login
+        Call<BaseResponse<User>> responseCall = userApi.login(requestBody);
+        responseCall.enqueue(new Callback<BaseResponse<User>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User responseUser = response.body().getData();
+                    User user = new User();
+                    user.setEmail(firebaseUser.getEmail());
+                    user.setUsername(firebaseUser.getDisplayName());
+                    user.setProfileAvatar(String.valueOf(firebaseUser.getPhotoUrl()));
+                    user.setUid(firebaseUser.getUid());
+
+                    user.setToken(responseUser.getToken());
+                    AuthStore.getInstance().setLoggedUser(user);
+                    finishInit();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
+                finishInit();
+            }
+        });
+        finishInit();
     }
 
     private void loadSVG(SVGImageView imageView, int resourceId) {

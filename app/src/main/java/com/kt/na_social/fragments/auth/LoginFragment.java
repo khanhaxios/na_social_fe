@@ -32,14 +32,23 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.kt.na_social.MainActivity;
 import com.kt.na_social.R;
+import com.kt.na_social.api.UserApi;
+import com.kt.na_social.api.requests.LoginRequestBody;
+import com.kt.na_social.api.response.BaseResponse;
+import com.kt.na_social.api.response.UserResponse;
 import com.kt.na_social.enums.AuthKeyType;
 import com.kt.na_social.model.User;
 import com.kt.na_social.ultis.KeyStore;
 import com.kt.na_social.ultis.Navigator;
+import com.kt.na_social.ultis.RetrofitApi;
 import com.kt.na_social.ultis.StaticStore;
 import com.kt.na_social.viewmodel.AuthStore;
 
 import java.security.Key;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LoginFragment extends Fragment {
@@ -60,7 +69,7 @@ public class LoginFragment extends Fragment {
     private final int RC_SIGN_IN = 66;
 
     private GoogleSignInClient googleSignInClient;
-
+    UserApi userApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +84,7 @@ public class LoginFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         checkIsLoggedIn();
         credentialManager = CredentialManager.create(requireContext());
+        userApi = RetrofitApi.getInstance().create(UserApi.class);
         return root;
     }
 
@@ -126,7 +136,7 @@ public class LoginFragment extends Fragment {
                 Toast.makeText(requireActivity(), "Email or Password Incorrect!", Toast.LENGTH_LONG).show();
                 return;
             }
-            handleFirebaseUser();
+            handleFirebaseUser(password, null);
             if (cbRememberMe.isChecked()) {
                 saveCredentials(null, password, email, AuthKeyType.PASSWORD);
             }
@@ -142,18 +152,44 @@ public class LoginFragment extends Fragment {
 
 
     public void goToFeed() {
-        NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.loginFragment, true)
-                .build();
+        NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.loginFragment, true).build();
         Navigator.navigateTo(R.id.link_go_to_feed, navOptions);
     }
 
-    public void handleFirebaseUser() {
+    public void handleFirebaseUser(String password, String token) {
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser != null) {
-            User user = new User.Builder().setEmail(firebaseUser.getEmail()).setUsername(firebaseUser.getDisplayName()).setProfileAvatar(String.valueOf(firebaseUser.getPhotoUrl())).setUid(firebaseUser.getUid()).build();
-            AuthStore.getInstance().setLoggedUser(user);
-            Toast.makeText(requireContext(), "Login Success", Toast.LENGTH_LONG).show();
-            goToFeed();
+            LoginRequestBody requestBody = new LoginRequestBody();
+            requestBody.setDisplayName(firebaseUser.getDisplayName());
+            requestBody.setPassword(password);
+            requestBody.setUsername(firebaseUser.getEmail());
+            requestBody.setAvatar(String.valueOf(firebaseUser.getPhotoUrl()));
+            requestBody.setUid(firebaseUser.getUid());
+            requestBody.setToken(token);
+            // call api to login
+            Call<BaseResponse<User>> responseCall = userApi.login(requestBody);
+            responseCall.enqueue(new Callback<BaseResponse<User>>() {
+                @Override
+                public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        User userResp = response.body().getData();
+                        User user = new User();
+                        user.setEmail(firebaseUser.getEmail());
+                        user.setUsername(firebaseUser.getDisplayName());
+                        user.setProfileAvatar(String.valueOf(firebaseUser.getPhotoUrl()));
+                        user.setUid(firebaseUser.getUid());
+                        user.setToken(userResp.getToken());
+                        AuthStore.getInstance().setLoggedUser(user);
+                        goToFeed();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
+                    Toast.makeText(requireContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
     }
 
@@ -169,7 +205,7 @@ public class LoginFragment extends Fragment {
                         Toast.makeText(requireActivity(), "Login failed , Pls Try Later", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    handleFirebaseUser();
+                    handleFirebaseUser(null, account.getIdToken());
                     saveCredentials(account, null, null, AuthKeyType.GOOGLE);
                 });
             } catch (Exception e) {

@@ -57,9 +57,9 @@
 
     <ImageView
         android:id="@+id/feed_imv"
+        android:scaleType="fitXY"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop"
+        android:layout_height="350dp"
         android:src="@drawable/demo_post_image" />
 
     <LinearLayout

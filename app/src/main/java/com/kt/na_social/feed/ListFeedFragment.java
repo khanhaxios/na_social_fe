@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,12 +18,18 @@ import android.widget.Toast;
 import com.kt.na_social.R;
 import com.kt.na_social.adapters.FeedAdapter;
 import com.kt.na_social.api.FeedApi;
+import com.kt.na_social.api.response.BaseResponse;
+import com.kt.na_social.api.response.PageableResponse;
 import com.kt.na_social.model.Feed;
+import com.kt.na_social.ultis.ApiUtils;
 import com.kt.na_social.ultis.Navigator;
 import com.kt.na_social.ultis.RetrofitApi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +43,8 @@ public class ListFeedFragment extends Fragment {
     ImageButton mBtnGoNoti;
     private int LIMIT = 10;
     private int PAGE = 0;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,7 @@ public class ListFeedFragment extends Fragment {
 
     public void initElement(View root) {
         feedCycle = root.findViewById(R.id.rcy_feed);
+        swipeRefreshLayout = root.findViewById(R.id.swipeRefreshLayout);
         mBtnGoNewFeed = root.findViewById(R.id.btn_go_new_feed);
         mBtnGoNewFeed.setOnClickListener(v -> {
             Navigator.navigateTo(R.id.link_go_to_new_feed, null);
@@ -77,22 +87,22 @@ public class ListFeedFragment extends Fragment {
         });
         FeedAdapter.IFeedAction iFeedAction = new FeedAdapter.IFeedAction() {
             @Override
-            public void likeFeed(int feedId) {
+            public void likeFeed(long feedId) {
 
             }
 
             @Override
-            public void openFeedComment(int feedId) {
+            public void openFeedComment(long feedId) {
 
             }
 
             @Override
-            public void shareFeed(int feedId) {
+            public void shareFeed(long feedId) {
 
             }
 
             @Override
-            public void bookMarkFeed(int feedId) {
+            public void bookMarkFeed(long feedId) {
 
             }
         };
@@ -110,18 +120,38 @@ public class ListFeedFragment extends Fragment {
                 }
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                PAGE = 0;
+                loadFeed(PAGE);
+            }
+        });
+    }
+
+    private static List<Feed> removeDuplicates(List<Feed> feeds) {
+        List<Feed> result = new ArrayList<>();
+        for (Feed feed : feeds) {
+            if (result.stream().noneMatch((f) -> f.getId() == feed.getId())) {
+                result.add(feed);
+            }
+        }
+        return new ArrayList<>(result);
     }
 
     public void loadFeed(int offsets) {
         // fetch from server
         FeedApi feedApi = RetrofitApi.getInstance().create(FeedApi.class);
-        Call<List<Feed>> call = feedApi.getNewsFeed(getStartRecord(offsets), LIMIT);
-        call.enqueue(new Callback<List<Feed>>() {
+        Call<BaseResponse<PageableResponse<List<Feed>>>> call = feedApi.getNewsFeed(ApiUtils.getApiToken(), getStartRecord(offsets), LIMIT);
+        call.enqueue(new Callback<BaseResponse<PageableResponse<List<Feed>>>>() {
             @Override
-            public void onResponse(Call<List<Feed>> call, Response<List<Feed>> response) {
-                if (response.isSuccessful()) {
-                    Log.d("fetch success and data length :: ", response.body().size() + "");
-                    feedAdapter.addFeeds(response.body());
+            public void onResponse(Call<BaseResponse<PageableResponse<List<Feed>>>> call, Response<BaseResponse<PageableResponse<List<Feed>>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("fetch success", "ascasc");
+                    List<Feed> allFeed = feedAdapter.getFeedList();
+                    allFeed.addAll(response.body().getData().getContent());
+                    feedAdapter.updateData(removeDuplicates(allFeed));
+                    swipeRefreshLayout.setRefreshing(false);
                 } else {
                     Log.d("fetch error1 :: ", response.message());
                     Toast.makeText(requireActivity(), response.message(), Toast.LENGTH_SHORT).show();
@@ -129,7 +159,7 @@ public class ListFeedFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Feed>> call, Throwable t) {
+            public void onFailure(Call<BaseResponse<PageableResponse<List<Feed>>>> call, Throwable t) {
                 Log.d("fetch error :: ", t.getMessage());
                 Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
