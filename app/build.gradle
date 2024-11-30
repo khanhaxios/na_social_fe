@@ -7,6 +7,9 @@ android {
     namespace 'com.kt.na_social'
     compileSdk 34
 
+    viewBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.kt.na_social"
         minSdk 24
