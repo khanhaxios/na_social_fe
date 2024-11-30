@@ -61,4 +61,9 @@
         android:id="@+id/notificationFragment"
         android:name="com.kt.na_social.feed.NotificationFragment"
         android:label="NotificationFragment" />
+    <action android:id="@+id/link_go_to_friend" app:destination="@id/friendFragment"/>
+    <fragment
+        android:id="@+id/friendFragment"
+        android:name="com.kt.na_social.friend.FriendFragment"
+        android:label="FriendFragment" />
 </navigation>

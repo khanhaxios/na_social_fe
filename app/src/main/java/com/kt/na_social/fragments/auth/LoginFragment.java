@@ -186,7 +186,8 @@ public class LoginFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
-                    Toast.makeText(requireContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                    Log.d("DEV :::: ", t.getMessage());
+                    Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -212,7 +213,7 @@ public class LoginFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-    }
+    }   
 
     public void saveCredentials(@Nullable GoogleSignInAccount account, String password, String cEmail, AuthKeyType authKeyType) {
         if (authKeyType == AuthKeyType.GOOGLE) {

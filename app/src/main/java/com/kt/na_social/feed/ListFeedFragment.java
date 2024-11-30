@@ -3,6 +3,7 @@ package com.kt.na_social.feed;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.kt.na_social.R;
 import com.kt.na_social.adapters.FeedAdapter;
 import com.kt.na_social.api.FeedApi;
@@ -41,8 +44,10 @@ public class ListFeedFragment extends Fragment {
     ImageButton mBtnGoNewFeed;
     ImageButton mBtnGoSearch;
     ImageButton mBtnGoNoti;
-    private int LIMIT = 10;
+    private int LIMIT = 100;
     private int PAGE = 0;
+
+    LinearLayout btnGoFriend;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -56,6 +61,7 @@ public class ListFeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list_feed, container, false);
         initElement(root);
+        initBottomMenu(root);
         return root;
     }
 
@@ -163,6 +169,13 @@ public class ListFeedFragment extends Fragment {
                 Log.d("fetch error :: ", t.getMessage());
                 Toast.makeText(requireActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
+        });
+    }
+
+    public void initBottomMenu(View root) {
+        btnGoFriend = root.findViewById(R.id.btn_go_friend_tab);
+        btnGoFriend.setOnClickListener(s -> {
+            Navigator.navigateTo(R.id.link_go_to_friend, null);
         });
     }
 }
