@@ -3,7 +3,6 @@ package com.kt.na_social.feed;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.kt.na_social.R;
 import com.kt.na_social.adapters.FeedAdapter;
 import com.kt.na_social.api.FeedApi;
@@ -29,10 +27,7 @@ import com.kt.na_social.ultis.Navigator;
 import com.kt.na_social.ultis.RetrofitApi;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -126,12 +121,9 @@ public class ListFeedFragment extends Fragment {
                 }
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                PAGE = 0;
-                loadFeed(PAGE);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            PAGE = 0;
+            loadFeed(PAGE);
         });
     }
 

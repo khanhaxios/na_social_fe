@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitApi {
-    private static final String IP = "192.168.0.100";
+    private static final String IP = "192.168.0.103";
     private static final String PORT = "8088";
     public static final String API_BASE_URL = String.format("http://%s:%s/api/", IP, PORT);
 
