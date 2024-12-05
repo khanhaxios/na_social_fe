@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="user.EditProfileActivity">
+
+    <!-- Ảnh bìa -->
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="50dp"
+        android:background="#007AFF" /> <!-- Màu xanh 007AFF -->
+
+    <!-- ScrollView chứa các trường chỉnh sửa -->
+    <ScrollView
+        android:id="@+id/scrolView_account"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="250dp">
+
+        <RelativeLayout
+            android:id="@+id/linear_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Ảnh đại diện và nút chỉnh sửa -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true">
+
+                <!-- Ảnh đại diện -->
+                <ImageView
+                    android:id="@+id/imageview_account_profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="0dp"
+                    android:contentDescription="Profile Avatar"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/avt" />
+
+                <!-- Nút chỉnh sửa ảnh đại diện -->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/imageview_account_profile"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_edit"
+                    android:tint="#FFFFFF" />
+            </RelativeLayout>
+
+            <!-- Các trường thông tin người dùng -->
+            <TextView
+                android:id="@+id/tvProfileDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:text="Profile Details"
+                android:textSize="18sp"
+                android:textStyle="bold"
+<!--                android:layout_below="@id/imageview_account_profile" -->
+                />
+
+            <!-- Trường nhập Tên -->
+            <EditText
+                android:id="@+id/edtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Please Enter User Name"
+                android:imeOptions="actionNext"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#007AFF"
+                android:layout_below="@id/tvProfileDetails" />
+
+            <!-- Trường nhập Email -->
+            <EditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Email Address"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#007AFF"
+                android:layout_below="@id/edtUserName" />
+
+            <!-- Trường nhập Mật khẩu -->
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:hint="Password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#007AFF"
+                android:layout_below="@id/edtEmail" />
+
+            <!-- Nút Save -->
+            <Button
+                android:id="@+id/btnSaveProfile"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
+                android:background="#007AFF"
+                android:text="Save"
+                android:textColor="#FFFFFF"
+                android:layout_below="@id/edtPassword" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
