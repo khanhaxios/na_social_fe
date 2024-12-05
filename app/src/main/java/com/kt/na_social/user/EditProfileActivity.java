@@ -57,25 +57,25 @@ public class EditProfileActivity extends AppCompatActivity {
         btnSaveProfile.setOnClickListener(v -> saveProfile());
     }
 
-    private void getCurrentUserInfo() {
-        UserApi userApi = ApiClient.getClient().create(UserApi.class);
-        userApi.getCurrentUserInfo().enqueue(new Callback<BaseResponse<User>>() {
-            @Override
-            public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                    currentUser = response.body().getData();
-                    displayUserData();
-                } else {
-                    Toast.makeText(EditProfileActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
-                Toast.makeText(EditProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+//    private void getCurrentUserInfo() {
+//        UserApi userApi = ApiClient.getClient().create(UserApi.class);
+//        userApi.getCurrentUserInfo().enqueue(new Callback<BaseResponse<User>>() {
+//            @Override
+//            public void onResponse(Call<BaseResponse<User>> call, Response<BaseResponse<User>> response) {
+//                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+//                    currentUser = response.body().getData();
+//                    displayUserData();
+//                } else {
+//                    Toast.makeText(EditProfileActivity.this, "Failed to load user data", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<BaseResponse<User>> call, Throwable t) {
+//                Toast.makeText(EditProfileActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     private void displayUserData() {
         if (currentUser != null) {
