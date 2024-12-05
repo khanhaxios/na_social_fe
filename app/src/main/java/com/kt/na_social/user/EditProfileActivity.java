@@ -50,8 +50,6 @@ public class EditProfileActivity extends AppCompatActivity {
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         btnEditAvatar = findViewById(R.id.floatingActionButton);
 
-        getCurrentUserInfo();
-
         btnEditAvatar.setOnClickListener(v -> openGallery());
 
         btnSaveProfile.setOnClickListener(v -> saveProfile());
