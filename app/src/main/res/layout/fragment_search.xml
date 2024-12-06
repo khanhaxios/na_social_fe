@@ -1,79 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
-
+    android:background="#FFFFFF"
+    android:orientation="vertical">
     <!-- Search Bar with Back Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp"
-        android:gravity="center_vertical">
+        android:padding="8dp">
 
-        <!-- Back Button -->
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/search"
-            android:layout_marginEnd="8dp" />
-
-        <!-- Search Bar -->
-        <EditText
-            android:id="@+id/search_bar"
-            android:layout_width="0dp"
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Search for users, posts, or stories..."
-            android:drawablePadding="8dp"
-            android:padding="12dp"
-            />
+            android:layout_marginHorizontal="2dp"
+            android:layout_marginVertical="2dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp">
+
+                <EditText
+                    android:id="@+id/search_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:drawablePadding="8dp"
+                    android:hint="Search for users, posts ..."
+                    android:imeOptions="actionSearch"
+                    android:maxLines="1"
+                    android:padding="12dp" />
+
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/baseline_search_24" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
-
     <!-- Tabs for User, Post, Story -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:tabIndicatorColor="#0067e6"
-        app:tabTextColor="@color/black"
-        app:tabSelectedTextColor="#0067e6"
-        app:tabMode="fixed">
+    <!--    <com.google.android.material.tabs.TabLayout-->
+    <!--        android:id="@+id/tab_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="#FFFFFF"-->
+    <!--        app:tabIndicatorColor="#0067e6"-->
+    <!--        app:tabTextColor="@color/black"-->
+    <!--        app:tabSelectedTextColor="#0067e6"-->
+    <!--        app:tabMode="fixed">-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab_user"
-            android:text="User"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+    <!--        <com.google.android.material.tabs.TabItem-->
+    <!--            android:id="@+id/tab_user"-->
+    <!--            android:text="User"  android:layout_height="wrap_content" android:layout_width="wrap_content"/>-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab_post"
-            android:layout_height="wrap_content" android:layout_width="wrap_content"
-            android:text="Post" />
+    <!--        <com.google.android.material.tabs.TabItem-->
+    <!--            android:id="@+id/tab_post"-->
+    <!--            android:layout_height="wrap_content" android:layout_width="wrap_content"-->
+    <!--            android:text="Post" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_height="wrap_content" android:layout_width="wrap_content"
-            android:id="@+id/tab_story"
-            android:text="Story" />
-    </com.google.android.material.tabs.TabLayout>
+    <!--        <com.google.android.material.tabs.TabItem-->
+    <!--            android:layout_height="wrap_content" android:layout_width="wrap_content"-->
+    <!--            android:id="@+id/tab_story"-->
+    <!--            android:text="Story" />-->
+    <!--    </com.google.android.material.tabs.TabLayout>-->
 
-    <!-- Results Section Title -->
     <TextView
-        android:id="@+id/results_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Users"
-        android:textSize="16sp"
-        android:textStyle="bold"
         android:padding="8dp"
-        android:textColor="@color/black" />
+        android:text="Users"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/rcy_users"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="8dp"
+        android:text="Feeds"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcy_feeds"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
 </LinearLayout>
